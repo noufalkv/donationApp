@@ -16,11 +16,16 @@ import Tab from '../../components/Tab/Tab';
 import {updateSelectedCategoryId} from '../../redux/reducers/Categories';
 import {useEffect, useState} from 'react';
 import SingleDonationItem from '../../components/SingleDonationItem/SingleDonationItem';
+import {updateSelectedDonationId} from '../../redux/reducers/Donations';
+import {Routes} from '../../navigation/Routes';
 
-const Home = () => {
+const Home = ({navigation}) => {
   const user = useSelector(state => state.user);
   const categories = useSelector(state => state.categories);
   const donations = useSelector(state => state.donations);
+  const selectedDonationInformation = useSelector(
+    state => state.donations.selectedDonationInformation,
+  );
 
   const dispatch = useDispatch();
   const [categoryPage, setCategoryPage] = useState(1);
@@ -28,7 +33,6 @@ const Home = () => {
   const [isLoadingCategories, setIsLoadingCategories] = useState(false);
   const categoryPageSize = 4;
   const [donationItems, setDonationItems] = useState([]);
-  console.log('donationItems', donationItems);
 
   useEffect(() => {
     const items = donations.items.filter(value =>
@@ -54,6 +58,14 @@ const Home = () => {
     }
     return items.slice(startIndex, endIndex);
   };
+  const donationPressed = donationItemId => {
+    const categoryInformation = categories.categories.find(
+      val => val.categoryId === categories.selectedCategoryId,
+    );
+    dispatch(updateSelectedDonationId({selectedDonationId: donationItemId}));
+    navigation.navigate(Routes.SingleDonationItem, {categoryInformation});
+  };
+
   return (
     <SafeAreaView style={[globalStyle.backgroundWhite, globalStyle.flex1]}>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -137,22 +149,26 @@ const Home = () => {
 
         {donationItems.length > 0 && (
           <View style={style.donationItemsContainer}>
-            {donationItems.map(value => (
-              <View key={value.donationItemId} style={style.singleDonationItem}>
-                <SingleDonationItem
-                  onPress={selectedDonationId => {}}
-                  donationItemId={value.donationItemId}
-                  uri={value.image}
-                  donationTitle={value.name}
-                  badgeTitle={
-                    categories.categories.filter(
-                      val => val.categoryId === categories.selectedCategoryId,
-                    )[0].name
-                  }
-                  price={parseFloat(value.price)}
-                />
-              </View>
-            ))}
+            {donationItems.map(value => {
+              return (
+                <View
+                  key={value.donationItemId}
+                  style={style.singleDonationItem}>
+                  <SingleDonationItem
+                    onPress={donationPressed}
+                    donationItemId={value.donationItemId}
+                    uri={value.image}
+                    donationTitle={value.name}
+                    badgeTitle={
+                      categories.categories.filter(
+                        val => val.categoryId === categories.selectedCategoryId,
+                      )[0].name
+                    }
+                    price={parseFloat(value.price)}
+                  />
+                </View>
+              );
+            })}
           </View>
         )}
       </ScrollView>
