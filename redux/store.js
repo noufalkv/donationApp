@@ -1,8 +1,9 @@
 import {configureStore, combineReducers} from '@reduxjs/toolkit';
 import User from './reducers/User';
-import {logger} from 'redux-logger';
+import Categories from './reducers/Categories';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {persistReducer, persistStore} from 'redux-persist';
+import Donations from './reducers/Donations';
 const configuration = {
   key: 'root',
   storage: AsyncStorage,
@@ -10,6 +11,8 @@ const configuration = {
 };
 const rootReducer = combineReducers({
   user: User,
+  categories: Categories,
+  donations: Donations,
 });
 const persistedReducer = persistReducer(configuration, rootReducer);
 const store = configureStore({
