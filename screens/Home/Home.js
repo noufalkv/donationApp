@@ -1,3 +1,4 @@
+/* eslint-disable react/react-in-jsx-scope */
 import {
   FlatList,
   Image,
@@ -18,6 +19,8 @@ import {useEffect, useState} from 'react';
 import SingleDonationItem from '../../components/SingleDonationItem/SingleDonationItem';
 import {updateSelectedDonationId} from '../../redux/reducers/Donations';
 import {Routes} from '../../navigation/Routes';
+import {resetToInitialState} from '../../redux/reducers/User';
+import {logOut} from '../../api/user';
 
 const Home = ({navigation}) => {
   const user = useSelector(state => state.user);
@@ -26,6 +29,7 @@ const Home = ({navigation}) => {
   const selectedDonationInformation = useSelector(
     state => state.donations.selectedDonationInformation,
   );
+  console.log('user', user);
 
   const dispatch = useDispatch();
   const [categoryPage, setCategoryPage] = useState(1);
@@ -73,19 +77,29 @@ const Home = ({navigation}) => {
           <View>
             <Text style={style.headerIntroText}>Hello</Text>
             <View style={style.username}>
-              <Header title={user.firstName + ' ' + user.lastName + '. 👋'} />
+              <Header title={user.displayName + '. 👋'} />
             </View>
           </View>
-          <Image
-            source={{
-              uri: user.profileImage,
-            }}
-            resizeMode="contain"
-            style={style.profileImage}
-            onError={e =>
-              console.log('Image loading error:', e.nativeEvent.error)
-            }
-          />
+          <View>
+            <Pressable
+              onPress={async () => {
+                dispatch(resetToInitialState());
+                await logOut();
+              }}>
+              <Image
+                source={{
+                  uri: user.profileImage,
+                }}
+                resizeMode="contain"
+                style={style.profileImage}
+                onError={e =>
+                  console.log('Image loading error:', e.nativeEvent.error)
+                }
+              />
+
+              <Header color={'#156CF7'} type={3} title={'Logout'} />
+            </Pressable>
+          </View>
         </View>
         <View style={style.searchBox}>
           <Search />
