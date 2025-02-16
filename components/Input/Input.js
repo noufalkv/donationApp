@@ -4,7 +4,7 @@ import style from './style';
 import PropTypes from 'prop-types';
 
 const Input = props => {
-  const [value, setValue] = useState('');
+  const [value, setValue] = useState(props.value);
 
   return (
     <View>

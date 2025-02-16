@@ -6,11 +6,14 @@ import BackButton from '../../components/BackButton/BackButton';
 import Header from '../../components/Header/Header';
 import Input from '../../components/Input/Input';
 import Button from '../../components/Button/Button';
+import {createUser} from '../../api/user';
 
 const Registration = ({navigation}) => {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [success, setSuccess] = useState('');
+  const [error, setError] = useState('');
   return (
     <SafeAreaView style={[globalStyle.backgroundWhite, globalStyle.flex]}>
       <View style={style.backButton}>
@@ -29,6 +32,7 @@ const Registration = ({navigation}) => {
             onChangeText={value => setFullName(value)}
           />
         </View>
+
         <View style={globalStyle.marginBottom24}>
           <Input
             keyboardType={'email-address'}
@@ -45,8 +49,25 @@ const Registration = ({navigation}) => {
             onChangeText={value => setPassword(value)}
           />
         </View>
+        {error.length > 0 && <Text style={style.error}>{error}</Text>}
+        {success.length > 0 && <Text style={style.success}>{success}</Text>}
         <View style={globalStyle.marginBottom24}>
-          <Button title={'Registration'} />
+          <Button
+            title={'Registration'}
+            onPress={async () => {
+              let user = await createUser(fullName, email, password);
+              if (user.error) {
+                setError(user.error);
+              } else {
+                setError('');
+                setSuccess('You have successfully registered');
+                setTimeout(() => navigation.goBack(), 3000);
+              }
+            }}
+            isDisabled={
+              fullName.length <= 2 || email.length <= 5 || password.length < 8
+            }
+          />
         </View>
       </ScrollView>
     </SafeAreaView>

@@ -13,6 +13,7 @@ const style = StyleSheet.create({
     paddingVertical: verticalScale(12),
     borderBottomWidth: 1,
     borderBottomColor: 'rgba(167, 167, 167, 0.5)',
+    color: 'black',
   },
 });
 export default style;
