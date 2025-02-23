@@ -8,6 +8,7 @@ import Badge from '../../components/Badge/Badge';
 import Header from '../../components/Header/Header';
 import Button from '../../components/Button/Button';
 import {Routes} from '../../navigation/Routes';
+import {CardForm, StripeProvider} from '@stripe/stripe-react-native';
 
 const SingleDonationItem = ({navigation, route}) => {
   const categoryInformation = route.params.categoryInformation;
@@ -25,16 +26,16 @@ const SingleDonationItem = ({navigation, route}) => {
           <Badge title={categoryInformation.name} />
         </View>
         <Header type={1} title={donationInformation.name} />
-        <Text style={style.description}>
-          {donationInformation.description}
-          {donationInformation.description}
-          {donationInformation.description}
-          {donationInformation.description}
-          {donationInformation.description}
-          {donationInformation.description}
-          {donationInformation.description}
-        </Text>
+        <Text style={style.description}>{donationInformation.description}</Text>
       </ScrollView>
+      <View>
+        <StripeProvider
+          publishableKey={
+            'pk_test_51QvXRoCB2glA0dzwR06fac4LcRls97uTaiKOMNqP6pLoOCeijXjCW782msWcygtGCmpZBDmiEayeczMIVbAjw0g500nFRnsS0N'
+          }>
+          <CardForm style={style.cardForm} />
+        </StripeProvider>
+      </View>
       <View style={style.button}>
         <Button
           title={'Donate'}
